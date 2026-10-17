@@ -12,6 +12,8 @@ from email.utils import parsedate_to_datetime
 from urllib import robotparser
 from urllib.parse import urlsplit
 
+import json
+
 import aiohttp
 
 from .document import BLOCKED_RE
@@ -143,9 +145,9 @@ class AiohttpTransport:
         if self.session:
             await self.session.close()
 
-    async def get(self, url: str, headers: dict | None = None) -> Response:
+    async def request(self, method: str, url: str, headers: dict | None = None, json_body=None) -> Response:
         t0 = time.monotonic()
-        async with self.session.get(url, allow_redirects=True, headers=headers) as r:
+        async with self.session.request(method, url, allow_redirects=True, headers=headers, json=json_body) as r:
             body = await r.read()
             return Response(str(r.url), r.status, {k.lower(): v for k, v in r.headers.items()}, body,
                             time.monotonic() - t0)
@@ -165,9 +167,12 @@ class CurlTransport:
     async def __aexit__(self, *a):
         pass
 
-    async def get(self, url: str, headers: dict | None = None) -> Response:
+    async def request(self, method: str, url: str, headers: dict | None = None, json_body=None) -> Response:
         t0 = time.monotonic()
         extra = [x for k, v in (headers or {}).items() for x in ("-H", f"{k}: {v}")]
+        if json_body is not None:
+            extra += ["-X", method, "-H", "Content-Type: application/json",
+                      "--data-binary", json.dumps(json_body, ensure_ascii=False)]
         with tempfile.TemporaryDirectory() as td:
             body_p, hdr_p = os.path.join(td, "b"), os.path.join(td, "h")
             proc = await asyncio.create_subprocess_exec(
@@ -196,8 +201,9 @@ class Http:
         self.log = log
         transport_cls = CurlTransport if cfg.transport == "curl" else AiohttpTransport
         self.transport = transport_cls(cfg.user_agent, cfg.max_concurrency, cfg.timeout)
-        self.rate = RateLimiter(cfg.rps)
-        self.limit = AdaptiveLimit(cfg.start_concurrency)
+        self.rate = RateLimiter(cfg.rps)          # один лимит частоты на все запросы, оба языка и повторы
+        self.limit = AdaptiveLimit(cfg.start_concurrency)                    # документы
+        self.catalog_limit = AdaptiveLimit(getattr(cfg, "catalog_start_concurrency", 2))  # страницы каталога
         self.stats: list[ReqStat] = []
         self.robots: robotparser.RobotFileParser | None = None
         self.last_429 = 0.0
@@ -236,24 +242,36 @@ class Http:
         self.rate.pause(min(wait, 900))
         self.rate.rps = max(0.1, self.rate.rps * 0.5)
         await self.limit.set(max(1, self.limit.limit // 2))
+        await self.catalog_limit.set(max(1, self.catalog_limit.limit // 2))
         self.last_429 = time.monotonic()
-        self.log(f"HTTP 429: пауза домена {wait:.0f} с, rps -> {self.rate.rps:.2f}, параллельность -> {self.limit.limit}")
+        self.log(f"HTTP 429: пауза домена {wait:.0f} с, rps -> {self.rate.rps:.2f}, параллельность документов -> "
+                 f"{self.limit.limit}, каталога -> {self.catalog_limit.limit}")
 
     async def get(self, url: str, kind: str = "doc", check_robots: bool = True,
                   max_attempts: int | None = None, headers: dict | None = None) -> Response:
+        return await self.fetch("GET", url, kind, check_robots, max_attempts, headers)
+
+    async def post_json(self, url: str, body: dict, kind: str = "search", check_robots: bool = True,
+                        max_attempts: int | None = None) -> Response:
+        return await self.fetch("POST", url, kind, check_robots, max_attempts,
+                                {"Accept": "application/json", "Content-Type": "application/json"}, body)
+
+    async def fetch(self, method: str, url: str, kind: str = "doc", check_robots: bool = True,
+                    max_attempts: int | None = None, headers: dict | None = None, json_body=None) -> Response:
         if check_robots and not self.allowed(url):
             raise RobotsDisallowed(url)
         attempts = max_attempts or self.cfg.max_retries
         last_err: Exception | None = None
         for attempt in range(attempts):
-            await self.limit.acquire(priority=kind == "catalog")
+            lim = self.catalog_limit if kind in ("catalog", "search") else self.limit
+            await lim.acquire()
             t0 = time.monotonic()
             status = None
             err_kind = None
             try:
                 await self.rate.acquire()
                 t0 = time.monotonic()
-                r = await self.transport.get(url, headers)
+                r = await self.transport.request(method, url, headers, json_body)
                 status = r.status
             except (aiohttp.ClientError, asyncio.TimeoutError, OSError) as e:
                 last_err = e
@@ -266,7 +284,7 @@ class Http:
                 else:
                     err_kind = "network"
             finally:
-                await self.limit.release()
+                await lim.release()
             lat = time.monotonic() - t0
             if r is not None and r.status == 200:
                 self.stats.append(ReqStat(time.time(), True, lat, 200, kind))
@@ -284,7 +302,7 @@ class Http:
                 if r.status == 404:
                     raise FetchError("HTTP 404", 404)
                 if 400 <= r.status < 500 and r.status not in (408, 425):
-                    raise FetchError(f"HTTP {r.status}", r.status)
+                    raise FetchError(f"HTTP {r.status}: {r.text()[:300]}", r.status)
                 last_err = FetchError(f"HTTP {r.status}", r.status)
             delay = min(self.cfg.backoff_cap, self.cfg.backoff_base * (2 ** attempt)) * random.uniform(0.5, 1.5)
             self.log(f"  повтор {attempt + 1}/{attempts} через {delay:.0f} с: {url} ({last_err!r})", verbose=True)
@@ -306,22 +324,30 @@ class LevelStat:
 class Controller:
     """Постепенное повышение параллельности 2 -> 4 -> 8 по полезной скорости и задержкам."""
 
-    def __init__(self, http: Http, cfg, saves_fn, log):
+    def __init__(self, http: Http, cfg, saves_fn, log, limit_attr: str = "limit", kinds: tuple | None = None,
+                 name: str = "документов", unit: str = "док/мин", max_level: int | None = None):
         self.http, self.cfg, self.saves_fn, self.log = http, cfg, saves_fn, log
+        self.limit_attr, self.kinds, self.name, self.unit = limit_attr, kinds, name, unit
+        self.max_level = max_level or cfg.max_concurrency
+        start = self.lim.limit
         lv = [2, 4, 8]
         x = 16
-        while x <= cfg.max_concurrency:
+        while x <= self.max_level:
             lv.append(x)
             x *= 2
-        self.levels = sorted({l for l in lv if l <= cfg.max_concurrency} | {cfg.start_concurrency, cfg.max_concurrency})
+        self.levels = sorted({l for l in lv if l <= self.max_level} | {start, self.max_level})
         self.history: dict[int, LevelStat] = {}
-        self.cur = LevelStat(http.limit.limit, time.time(), saves_fn())
-        self.ceiling = cfg.max_concurrency
+        self.cur = LevelStat(start, time.time(), saves_fn())
+        self.ceiling = self.max_level
         self.ceiling_until = 0.0
         self.decisions: list[str] = []
 
+    @property
+    def lim(self) -> AdaptiveLimit:
+        return getattr(self.http, self.limit_attr)
+
     def _window(self, since: float):
-        s = [x for x in self.http.stats if x.t >= since]
+        s = [x for x in self.http.stats if x.t >= since and (self.kinds is None or x.kind in self.kinds)]
         lat = sorted(x.latency for x in s if x.ok)
         p50 = lat[len(lat) // 2] if lat else 0.0
         # перегрузочные ошибки (таймауты, 5xx, 429) отдельно от быстрых сбросов соединения,
@@ -332,21 +358,21 @@ class Controller:
 
     async def _switch(self, new: int, reason: str) -> None:
         old = self.cur.level
-        await self.http.limit.set(new)
+        await self.lim.set(new)
         self.cur = LevelStat(new, time.time(), self.saves_fn())
-        msg = f"параллельность {old} -> {new}: {reason}"
+        msg = f"параллельность {self.name} {old} -> {new}: {reason}"
         self.decisions.append(msg)
         self.log(msg)
 
     async def tick(self) -> None:
         now = time.time()
         if now > self.ceiling_until:
-            self.ceiling = self.cfg.max_concurrency
+            self.ceiling = self.max_level
         # плавное восстановление частоты после 429
         if self.http.rate.rps < self.http.rate.configured_rps and time.monotonic() - self.http.last_429 > 600:
             self.http.rate.rps = min(self.http.rate.configured_rps, self.http.rate.rps * 1.25)
-        if self.http.limit.limit != self.cur.level:  # уменьшено обработчиком 429
-            self.cur = LevelStat(self.http.limit.limit, now, self.saves_fn())
+        if self.lim.limit != self.cur.level:  # уменьшено обработчиком 429
+            self.cur = LevelStat(self.lim.limit, now, self.saves_fn())
             self.ceiling, self.ceiling_until = self.cur.level, now + 900
             return
         elapsed = now - self.cur.started
@@ -357,7 +383,7 @@ class Controller:
         self.cur.dpm, self.cur.p50, self.cur.err, self.cur.n = saves / (elapsed / 60), p50, err, len(s)
         self.history[self.cur.level] = self.cur
         lvl = self.cur.level
-        info = (f"{self.cur.dpm:.1f} док/мин, медиана задержки {p50:.1f} с, таймауты/5xx/429 {err:.0%}, "
+        info = (f"{self.cur.dpm:.1f} {self.unit}, медиана задержки {p50:.1f} с, таймауты/5xx/429 {err:.0%}, "
                 f"сбросы соединения {resets:.0%} ({len(s)} запросов)")
         lower = [l for l in self.levels if l < lvl]
         if (err > 0.10 or resets > 0.35) and lower:
@@ -367,9 +393,9 @@ class Controller:
         prev = self.history.get(lower[-1]) if lower else None
         if prev and prev.dpm > 0 and (self.cur.dpm < prev.dpm * 1.15 or (prev.p50 and p50 > prev.p50 * 1.5)):
             self.ceiling, self.ceiling_until = lvl, now + 900
-            await self._switch(prev.level, f"уровень {lvl} не дал прироста ({info}; на {prev.level}: {prev.dpm:.1f} док/мин, {prev.p50:.1f} с)")
+            await self._switch(prev.level, f"уровень {lvl} не дал прироста ({info}; на {prev.level}: {prev.dpm:.1f} {self.unit}, {prev.p50:.1f} с)")
             return
-        cap = self.ceiling if self.ceiling_until > now else self.cfg.max_concurrency + 1
+        cap = self.ceiling if self.ceiling_until > now else self.max_level + 1
         higher = [l for l in self.levels if lvl < l < cap]
         if higher:
             await self._switch(higher[0], f"окно успешно: {info}")

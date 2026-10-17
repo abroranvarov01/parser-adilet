@@ -15,7 +15,7 @@ SOURCE = "adilet"
 LANG = "ru"  # язык по умолчанию (совместимость)
 LANGS = ("ru", "kk")
 SITE_SLUG = {"ru": "rus", "kk": "kaz"}   # путь на сайте: /rus/..., /kaz/...
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 # Состояния документа
 DISCOVERED = "discovered"
@@ -44,10 +44,24 @@ CREATE TABLE IF NOT EXISTS docs(
   md_path TEXT, meta_path TEXT, raw_path TEXT, info_raw_path TEXT, quarantine_path TEXT,
   raw_sha256 TEXT, text_sha256 TEXT, page_status_raw TEXT, page_status_class TEXT, status_mismatch INTEGER,
   n_attachments INTEGER, fetched_at TEXT, updated_at TEXT, source_uuid TEXT, api_url TEXT, transport TEXT,
+  catalog_record TEXT, last_seen_crawl TEXT, meta_stale INTEGER DEFAULT 0,
   PRIMARY KEY(source, doc_id, language));
 CREATE INDEX IF NOT EXISTS docs_state ON docs(state, next_try_at);
 CREATE TABLE IF NOT EXISTS events(ts TEXT, level TEXT, doc_id TEXT, kind TEXT, message TEXT, language TEXT);
 CREATE TABLE IF NOT EXISTS saves(ts REAL, doc_id TEXT, state TEXT, language TEXT);
+-- Каталог через POST /api/search: обход = (источник, язык, фильтры, сортировка, размер страницы, проход).
+CREATE TABLE IF NOT EXISTS api_crawls(crawl_key TEXT PRIMARY KEY, language TEXT, params TEXT, root_total INTEGER,
+  status TEXT, created_at TEXT, completed_at TEXT, unique_ids INTEGER, note TEXT);
+CREATE TABLE IF NOT EXISTS api_slices(crawl_key TEXT, slice_id TEXT, date_from TEXT, date_to TEXT, sort TEXT,
+  depth INTEGER, total_hits INTEGER, n_pages INTEGER, status TEXT, unique_ids INTEGER, attempts INTEGER DEFAULT 0,
+  next_try_at REAL DEFAULT 0, error TEXT, updated_at TEXT, PRIMARY KEY(crawl_key, slice_id));
+CREATE TABLE IF NOT EXISTS api_pages(crawl_key TEXT, slice_id TEXT, sort TEXT, page INTEGER, status TEXT,
+  n_results INTEGER, n_new INTEGER, ids_hash TEXT, raw_path TEXT, attempts INTEGER DEFAULT 0, next_try_at REAL DEFAULT 0,
+  error TEXT, fetched_at TEXT, PRIMARY KEY(crawl_key, slice_id, sort, page));
+CREATE TABLE IF NOT EXISTS api_slice_ids(crawl_key TEXT, slice_id TEXT, doc_id TEXT, PRIMARY KEY(crawl_key, slice_id, doc_id));
+CREATE INDEX IF NOT EXISTS api_slices_status ON api_slices(crawl_key, status);
+CREATE INDEX IF NOT EXISTS api_pages_status ON api_pages(crawl_key, status);
+CREATE INDEX IF NOT EXISTS docs_stale ON docs(meta_stale);
 """
 
 
@@ -155,9 +169,14 @@ class Store:
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("PRAGMA synchronous=NORMAL")
-        if not fresh and self._version() < SCHEMA_VERSION:
+        if not fresh and self._version() < 2:
             self.migrate_v2()
+        if not fresh and self._version() < 3:
+            self.migrate_v3()
         self.db.executescript(SCHEMA)
+        if "status_filter" not in {r[1] for r in self.db.execute("PRAGMA table_info(api_slices)")}:
+            self.db.execute("ALTER TABLE api_slices ADD COLUMN status_filter TEXT")
+            self.db.execute("ALTER TABLE api_slices ADD COLUMN parent_id TEXT")
         if fresh:
             self.set_meta("schema_version", SCHEMA_VERSION)
         paths.ensure()
@@ -253,6 +272,59 @@ class Store:
             raise
         print(f"миграция завершена: файлов перенесено в подкаталоги ru: {moved}", flush=True)
 
+    def migrate_v3(self) -> None:
+        """v2 -> v3: новый каталог через API всех статусов. Старый прогресс (old.adilet, st=new|upd) сохраняется,
+        но не считается обходом нового каталога."""
+        bak = self.backup("before_v3")
+        print(f"миграция state.sqlite до схемы v3 (каталог API, все статусы); резервная копия: {bak}", flush=True)
+        db = self.db
+        db.execute("BEGIN")
+        try:
+            have = {r[1] for r in db.execute("PRAGMA table_info(docs)")}
+            for col, typ in (("catalog_record", "TEXT"), ("last_seen_crawl", "TEXT"), ("meta_stale", "INTEGER DEFAULT 0")):
+                if col not in have:
+                    db.execute(f"ALTER TABLE docs ADD COLUMN {col} {typ}")
+            # документы, отложенные только из-за статуса, перепроверяются из сохранённых оригиналов
+            n = db.execute("UPDATE docs SET meta_stale=1 WHERE state='review'").rowcount
+            db.execute("INSERT OR REPLACE INTO meta VALUES('schema_version', ?)", (json.dumps(3),))
+            db.execute("INSERT INTO events VALUES(?,?,?,?,?,?)", (utcnow(), "info", None, "migration",
+                                                                  f"v2->v3, backup {bak.name}, review->перепроверка: {n}", None))
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+        print(f"миграция v3 завершена; документов на перепроверку статуса: {n}", flush=True)
+
+    # -- каталог API ---------------------------------------------------------------
+    def upsert_api_record(self, rec: dict, lang: str, crawl_key: str, page_url: str) -> bool:
+        """Запись поисковой выдачи -> docs. True, если ID на этом языке новый.
+        Уже скачанные документы не ставятся в очередь заново; при изменении статуса метаданные
+        помечаются к офлайн-обновлению (meta_stale)."""
+        code = rec.get("status") or None
+        cls = f"status_{code}" if code else None
+        title = (rec.get("title_ru") or "").strip() or None  # поле title_ru = название на языке документа
+        raw = json.dumps(rec, ensure_ascii=False)
+        cur = self.db.execute(
+            """INSERT INTO docs(source,doc_id,language,url,card_title,card_status_raw,card_status_class,card_requisites,
+                 discovered_from,first_seen_at,state,updated_at,source_uuid,catalog_record,last_seen_crawl)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(source,doc_id,language) DO NOTHING""",
+            (SOURCE, rec["group_number"], lang, page_url, title, code, cls, (rec.get("title_kz") or "").strip() or None,
+             "api_search", utcnow(), DISCOVERED, utcnow(), rec.get("id"), raw, crawl_key))
+        if cur.rowcount:
+            return True
+        old = self.doc(rec["group_number"], lang)
+        stale = int(old["state"] not in (DISCOVERED, DOWNLOADING) and
+                    (old["card_status_class"] != cls or old["catalog_record"] is None))
+        self.db.execute(
+            """UPDATE docs SET card_title=?, card_status_raw=?, card_status_class=?, card_requisites=?, catalog_record=?,
+                 last_seen_crawl=?, source_uuid=COALESCE(source_uuid, ?), meta_stale=MAX(meta_stale, ?),
+                 discovered_from=CASE WHEN discovered_from LIKE '%api_search%' THEN discovered_from
+                                      ELSE COALESCE(discovered_from,'') || '+api_search' END
+               WHERE source=? AND doc_id=? AND language=?""",
+            (title, code, cls, (rec.get("title_kz") or "").strip() or None, raw, crawl_key, rec.get("id"), stale,
+             SOURCE, rec["group_number"], lang))
+        return False
+
     # -- meta ------------------------------------------------------------------
     def get_meta(self, key: str, default=None):
         r = self.db.execute("SELECT value FROM meta WHERE key=?", (key,)).fetchone()
@@ -276,6 +348,9 @@ class Store:
             n_reparse += new == DOWNLOADED
             n_back += new == DISCOVERED
         self.db.execute("UPDATE catalog_pages SET status='pending' WHERE status='fetching'")
+        self.db.execute("UPDATE api_slices SET status='pending' WHERE status='fetching'")
+        self.db.execute("UPDATE api_pages SET status='pending' WHERE status='fetching'")
+        self.db.execute("UPDATE docs SET meta_stale=1 WHERE meta_stale=2")
         return {"requeued": n_back, "to_reparse": n_reparse}
 
     # -- catalog -------------------------------------------------------------------

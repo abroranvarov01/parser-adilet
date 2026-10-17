@@ -168,7 +168,11 @@ class Converter:
             return f"{lead}[{_escape_link_text(text.strip())}]({md_url(u)}){trail}"
         if name in ("sup", "sub"):
             t = inner.strip()
-            return f"{TAG_OPEN}{name}{TAG_CLOSE}{t}{TAG_OPEN}/{name}{TAG_CLOSE}" if t else ""
+            if not t:
+                return inner  # <sup> </sup> — пробел между словами сохраняется
+            lead = inner[: len(inner) - len(inner.lstrip())]
+            trail = inner[len(inner.rstrip()):]
+            return f"{lead}{TAG_OPEN}{name}{TAG_CLOSE}{t}{TAG_OPEN}/{name}{TAG_CLOSE}{trail}"
         return inner
 
     # -- blocks -------------------------------------------------------------

@@ -44,13 +44,17 @@ def _cfg(a) -> Config:
         catalog=not getattr(a, "no_catalog", False), ids=tuple(parse_ids(getattr(a, "ids", None), langs)),
         with_info=a.with_info, fetch_attachments=a.fetch_attachments,
         attachments_ignore_robots=a.attachments_ignore_robots, publish_incomplete=a.publish_incomplete,
-        doc_transport=a.doc_transport, api_fallback=not a.no_api_fallback, verbose=a.verbose)
+        doc_transport=a.doc_transport, api_fallback=a.old_site_fallback, catalog_source=a.catalog_source,
+        catalog_start_concurrency=a.catalog_concurrency, catalog_max_concurrency=a.catalog_max_concurrency,
+        slice_max=a.slice_max, search_sort=a.search_sort, verbose=a.verbose)
 
 
 def cmd_crawl(a) -> int:
-    if a.doc_transport == "api" and not a.i_accept_api_robots_risk:
-        sys.exit("--doc-transport api: robots.txt adilet.zan.kz запрещает /api/. Запуск только с явным флагом "
+    if (a.doc_transport == "api" or a.catalog_source == "api") and not a.i_accept_api_robots_risk:
+        sys.exit("API adilet.zan.kz (каталог/документы): robots.txt запрещает /api/. Запуск только с явным флагом "
                  "--i-accept-api-robots-risk (решение оператора).")
+    if not (1 <= a.slice_max <= 9900):
+        sys.exit("--slice-max должен быть от 1 до 9900 (предел глубины поиска API — 10 000)")
     if a.max_concurrency > 8 and not a.i_measured_above_8:
         sys.exit("--max-concurrency > 8 требует флага --i-measured-above-8 (подтверждение отдельных измерений).")
     cfg = _cfg(a)
@@ -97,9 +101,10 @@ def cmd_recheck(a) -> int:
     lock = _lock(paths)
     st = Store(paths)
     for lang in _langs(a.langs):
-        cur = st.get_meta(f"catalog_pass_{lang}", 1)
-        st.set_meta(f"catalog_pass_{lang}", cur + 1)
-        print(f"{lang}: начат проход сверки каталога №{cur + 1}")
+        key = "api_crawl_pass" if a.catalog_source == "api" else "catalog_pass"
+        cur = st.get_meta(f"{key}_{lang}", 1)
+        st.set_meta(f"{key}_{lang}", cur + 1)
+        print(f"{lang}: начат проход сверки каталога ({a.catalog_source}) №{cur + 1}")
     print("Запустите crawl: новые ID будут добавлены, проверенные документы не скачиваются повторно.")
     return 0
 
@@ -139,7 +144,13 @@ def collect_report(paths: Paths, lang: str) -> dict:
         "unread_attachments": rows("state=?", (INCOMPLETE,)),
         "download_errors": rows("state=? AND error_kind='download'", (FAILED,)),
         "extraction_errors": rows("state=? AND error_kind='extract'", (FAILED,)),
-        "status_discrepancies": rows("state=? OR status_mismatch=1", (REVIEW,)),
+        "no_text": rows("state=? AND error_kind='no_text'", (FAILED,)),
+        "technical_review": rows("state=?", (REVIEW,)),
+        "status_discrepancies": rows("status_mismatch=1"),
+        "by_source_status": dict(db.execute("SELECT COALESCE(REPLACE(page_status_class,'status_',''), card_status_raw, '?'), COUNT(*) FROM docs "
+                                            "WHERE language=? AND state IN ('validated','incomplete') GROUP BY 1", (lang,)).fetchall()),
+        "api_crawls": [dict(r) for r in db.execute("SELECT crawl_key, status, root_total, unique_ids, note FROM api_crawls "
+                                                   "WHERE language=?", (lang,))],
     }
 
 
@@ -161,16 +172,22 @@ def cmd_report(a) -> int:
         c, cat = rep["counts"], rep["catalog"]
         lines += [
             f"## Язык {lang}", "",
-            f"Каталог: проход {cat['pass']}, на сайте {cat['site_total_found']} док. / {cat['site_total_pages']} стр.; "
+            f"Старый каталог old.adilet (только действующие, не используется для полноты): проход {cat['pass']}, "
+            f"на сайте {cat['site_total_found']} док. / {cat['site_total_pages']} стр.; "
             f"страниц: {cat['pages']}; уникальных ID: {cat['unique_ids_in_db']}; полностью пройден: {cat['complete_at'] or 'нет'}", "",
-            f"- Полностью извлечены (data/adilet_{lang}): {rep['fully_extracted']}",
+            f"Каталог API: {rep['api_crawls']}", "",
+            f"Корпус содержит документы ВСЕХ статусов источника; статус — в метаданных и блоке реквизитов.", "",
+            f"- Полностью извлечены (data/adilet_{lang}): {rep['fully_extracted']}; по статусам источника: {rep['by_source_status']}",
             f"- С непрочитанными содержательными приложениями (data/incomplete/{lang}): {len(rep['unread_attachments'])}",
+            f"- Без текста в источнике / заглушки (quarantine): {len(rep['no_text'])}",
             f"- Ошибки загрузки: {len(rep['download_errors'])}",
             f"- Ошибки извлечения (quarantine): {len(rep['extraction_errors'])}",
-            f"- Расхождения/недействующий статус (review, quarantine): {len(rep['status_discrepancies'])}",
+            f"- Технические аномалии (язык текста и т.п., quarantine): {len(rep['technical_review'])}",
+            f"- Расхождения статуса каталога и документа (только отметка): {len(rep['status_discrepancies'])}",
             f"- В очереди: {c.get(DISCOVERED, 0)}", "",
         ]
         for title, key in (("Ошибки извлечения", "extraction_errors"), ("Ошибки загрузки", "download_errors"),
+                           ("Без текста", "no_text"), ("Технические аномалии", "technical_review"),
                            ("Расхождения статусов", "status_discrepancies"),
                            ("Непрочитанные приложения", "unread_attachments")):
             items = rep[key]
@@ -193,17 +210,37 @@ def cmd_report(a) -> int:
 
 
 def cmd_stats(a) -> int:
+    """Статистика по языкам, статусам источника и технической полноте."""
     paths = Paths(Path(a.data_dir).resolve())
     st = Store(paths)
+    db = st.db
     out = {}
     for lang in _langs(a.langs):
-        p = st.get_meta(f"catalog_pass_{lang}", 1)
+        # единый код статуса: CSS-класс старого сайта status_xxx и код API xxx совпадают (проверено)
+        status_expr = "COALESCE(REPLACE(page_status_class,'status_',''), card_status_raw, '?')"
+        by_status = {}
+        for r in db.execute(f"SELECT {status_expr} s, state, COUNT(*) n FROM docs WHERE language=? GROUP BY s, state", (lang,)):
+            by_status.setdefault(r["s"], {})[r["state"]] = r["n"]
+        crawls = [dict(r) for r in db.execute(
+            "SELECT crawl_key, status, root_total, unique_ids, note, completed_at FROM api_crawls WHERE language=? "
+            "ORDER BY created_at", (lang,))]
+        for c in crawls:
+            c["slices"] = dict(db.execute("SELECT status, COUNT(*) FROM api_slices WHERE crawl_key=? GROUP BY status",
+                                          (c["crawl_key"],)).fetchall())
+            c["pages"] = dict(db.execute("SELECT status, COUNT(*) FROM api_pages WHERE crawl_key=? GROUP BY status",
+                                         (c["crawl_key"],)).fetchall())
+            c["unique_ids_now"] = db.execute("SELECT COUNT(DISTINCT doc_id) FROM api_slice_ids WHERE crawl_key=?",
+                                             (c["crawl_key"],)).fetchone()[0]
         out[lang] = {
-            "counts": st.counts(lang),
-            "catalog_pass": p,
-            "site_total_found": st.get_meta(f"catalog_total_found_{lang}_{p}"),
-            "catalog_pages": {r[0]: r[1] for r in st.db.execute(
-                "SELECT status, COUNT(*) FROM catalog_pages WHERE language=? AND pass=? GROUP BY status", (lang, p))},
+            "by_state": st.counts(lang),
+            "by_completeness": dict(db.execute(
+                "SELECT COALESCE(completeness,'(не обработан)'), COUNT(*) FROM docs WHERE language=? GROUP BY 1", (lang,)).fetchall()),
+            "failed_by_kind": dict(db.execute(
+                "SELECT error_kind, COUNT(*) FROM docs WHERE language=? AND state='failed' GROUP BY 1", (lang,)).fetchall()),
+            "by_source_status_and_state": by_status,
+            "by_transport": dict(db.execute(
+                "SELECT COALESCE(transport,'-'), COUNT(*) FROM docs WHERE language=? GROUP BY 1", (lang,)).fetchall()),
+            "api_catalog_crawls": crawls,
             "saved_last_hour": st.saves_since(time.time() - 3600, lang),
         }
     print(json.dumps(out, ensure_ascii=False, indent=2))
@@ -234,17 +271,26 @@ def main(argv=None) -> int:
                         help="скачивать приложения из /files/, запрещённого robots.txt (только по решению оператора)")
         sp.add_argument("--publish-incomplete", action="store_true",
                         help="документы с непрочитанными приложениями класть в adilet_<lang> (по умолчанию — data/incomplete/<lang>)")
-        sp.add_argument("--doc-transport", choices=["old_html", "api"], default="old_html",
-                        help="откуда брать документы: страницы old.adilet (по умолчанию) или API adilet.zan.kz")
+        sp.add_argument("--catalog-source", choices=["api", "old_index"], default="api",
+                        help="каталог: api — POST adilet.zan.kz/api/search, все статусы (по умолчанию); "
+                             "old_index — old.adilet, только действующие")
+        sp.add_argument("--doc-transport", choices=["api", "old_html"], default="api",
+                        help="документы: api — adilet.zan.kz/api/documents/by-ngr (по умолчанию) или страницы old.adilet")
         sp.add_argument("--i-accept-api-robots-risk", action="store_true",
                         help="подтверждение оператора: API запрещён robots.txt нового домена")
-        sp.add_argument("--no-api-fallback", action="store_true",
-                        help="не переходить на страницу старого сайта при ошибке/заглушке API")
+        sp.add_argument("--old-site-fallback", action="store_true",
+                        help="при ошибке API брать документ со страницы old.adilet")
+        sp.add_argument("--catalog-concurrency", type=int, default=2, help="стартовая параллельность каталога")
+        sp.add_argument("--catalog-max-concurrency", type=int, default=4, help="потолок авто-повышения для каталога")
+        sp.add_argument("--slice-max", type=int, default=100,
+                        help="макс. документов в срезе каталога по датам (по умолчанию 100 = одна страница; <= 9900)")
+        sp.add_argument("--search-sort", choices=["relevance", "start_date_asc", "start_date_desc",
+                                                  "adoption_date_asc", "publication_date_asc"], default="relevance")
         sp.add_argument("--verbose", action="store_true")
 
     c = sub.add_parser("crawl", help="полный сбор / продолжение после остановки")
     net_args(c)
-    c.add_argument("--max-pages", type=int, help="на каждый язык")
+    c.add_argument("--max-pages", type=int, help="на каждый язык (для каталога API — число поисковых запросов)")
     c.add_argument("--max-docs", type=int)
     c.add_argument("--no-catalog", action="store_true", help="только очередь документов, без обхода каталогов")
     c.add_argument("--ids", help="ID через запятую; «kk:ID» — только для языка, без префикса — для всех")
@@ -271,6 +317,7 @@ def main(argv=None) -> int:
 
     rc = sub.add_parser("recheck-catalog", help="новый проход сверки каталогов (поиск новых ID)")
     lang_arg(rc)
+    rc.add_argument("--catalog-source", choices=["api", "old_index"], default="api")
     rc.set_defaults(fn=cmd_recheck)
 
     s = sub.add_parser("stats", help="статистика по языкам")
