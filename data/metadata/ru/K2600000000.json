@@ -1,0 +1,83 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "K2600000000",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "Конституция Республики Казахстан",
+  "card_title": null,
+  "requisites_raw": "Конституция принята на республиканском референдуме 15 марта 2026 года.",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/K2600000000",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Исправление ошибки",
+  "status_css_class": "status_err",
+  "normalized_status": null,
+  "card_status_raw": null,
+  "card_status_css_class": null,
+  "card_normalized_status": null,
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": null,
+  "discovered_from": "manual",
+  "dates": {
+    "adoption_date": null,
+    "adoption_date_source": null,
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "Примечание ИЗПИ! Порядок вступления в силу см. ст. 94.",
+      "Порядок вступления в силу см. ст. 94.",
+      "В случае внесения в Курултай законопроектов, предусмотренных частью первой настоящего пункта, Правительство вправе принимать под свою ответственность временные нормативные правовые акты, имеющие силу закона, по вопросам, указанным в пункте 3 настоящей статьи, которые действуют до вступления в силу принятых Курултаем законов или до отклонения Курултаем законопроектов.",
+      "2. Законы вступают в силу после их подписания Президентом Республики Казахстан.",
+      "6. Порядок разработки, представления, обсуждения, введения в действие и опубликования законодательных и иных нормативных правовых актов Республики Казахстан регламентируется законом и регламентом Курултая.",
+      "4. Решения Конституционного Суда вступают в силу со дня их принятия, являются общеобязательными на всей территории Республики Казахстан, окончательными и обжалованию не подлежат.",
+      "1. Конституция Республики Казахстан, принятая на республиканском референдуме, вступает в силу с 1 июля 2026 года с одновременным прекращением действия ранее принятой Конституции Республики Казахстан."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:31:58Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": null,
+    "quarantine": "quarantine/ru/K2600000000",
+    "raw": "raw/ru/K2600000000.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "dc1cf6c79719fc67761f9884100134f4d86f7de8001130c52569b65223b50577",
+  "text_sha256": "fd54d9c73e3840d8c81eeef195aff0b4ab8c65e5ed33420eb6aa47790b2dca82",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "2": 11,
+      "4": 96
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 30
+  },
+  "completeness": "complete",
+  "state": "review",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 10130,
+    "output_tokens": 10130,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 96,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [
+    "page_status_not_active:Исправление ошибки"
+  ],
+  "warnings": []
+}

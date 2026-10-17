@@ -1,0 +1,74 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "P2300000758",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "О признании утратившими силу некоторых решений Правительства Республики Казахстан",
+  "card_title": null,
+  "requisites_raw": "Постановление Правительства Республики Казахстан от 1 сентября 2023 года № 758.",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/P2300000758",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": null,
+  "card_status_css_class": null,
+  "card_normalized_status": null,
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": null,
+  "discovered_from": "manual",
+  "dates": {
+    "adoption_date": "2023-09-01",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "2. Настоящее постановление вводится в действие по истечении десяти календарных дней после дня его первого официального опубликования."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:31:32Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": "adilet_ru/P2300000758_О_признании_утратившими_силу_некоторых_решений_Правительства_Республики_Казахста.md",
+    "quarantine": null,
+    "raw": "raw/ru/P2300000758.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "58974a653205ebb80108ee4444e66e2848554f0dffdaa93ddec358ba436b4ff5",
+  "text_sha256": "e3eec1fe3cc9ebb915df035a792e9aa2671830b221b49ae73b9c8c1d80a5871f",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "2": 1
+    },
+    "tables": 1,
+    "html_tables": 0,
+    "links": 64
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 3075,
+    "output_tokens": 3075,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 0,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

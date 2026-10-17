@@ -1,0 +1,121 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O9200000001",
+  "source_uuid": "f5d461f5-cf28-4bdc-9a8a-9eedd341bbee",
+  "language": "kk",
+  "site_language": "kaz",
+  "title": "Халықаралық Федерацияның Алматыдағы аймақтық өкiлдiгiнiң статусы туралы Қазақстан Республикасы мен Халықаралық Қызыл Крест және Қызыл Жарты Ай қоғамдарының Федерациясы арасындағы Келісім",
+  "card_title": "Халықаралық Федерацияның Алматыдағы аймақтық өкiлдiгiнiң статусы туралы Қазақстан Республикасы мен Халықаралық Қызыл Крест және Қызыл Жарты Ай қоғамдарының Федерациясы арасындағы Келісім",
+  "requisites_raw": "Келiсiм, Алматы қ., 1992 жылғы 10 тамыз",
+  "source_url": "https://old.adilet.zan.kz/kaz/docs/O9200000001",
+  "api_url": "https://adilet.zan.kz/api/documents/by-ngr/O9200000001?language=kaz",
+  "transport": "api",
+  "robots_note": "adilet.zan.kz/robots.txt запрещает /api/; API использован по решению оператора (--i-accept-api-robots-risk)",
+  "api": {
+    "id": "f5d461f5-cf28-4bdc-9a8a-9eedd341bbee",
+    "group_number": "O9200000001",
+    "language": "kaz",
+    "status": "new",
+    "is_actual": true,
+    "is_actual_note": "не доказательство юридической силы",
+    "is_stub": false,
+    "has_content": true,
+    "content_size": "4434",
+    "text_content_length": 11937,
+    "title_ru_field": "Халықаралық Федерацияның Алматыдағы аймақтық өкiлдiгiнiң статусы туралы Қазақстан Республикасы мен Халықаралық Қызыл Крест және Қызыл Жарты Ай қоғамдарының Федерациясы арасындағы Келісім",
+    "title_kz_field": "Келiсiм, Алматы қ., 1992 жылғы 10 тамыз",
+    "official_name": "Келiсiм, Алматы қ., 1992 жылғы 10 тамыз",
+    "document_type": "Международный акт",
+    "registration_number": "200000000000",
+    "state_registry_number": "0",
+    "adoption_number": "",
+    "publication_reference": "Қазақстан Республикасының халықаралық шарттары Бюллетені, 2003 ж., N 10, 67-құжат",
+    "dates_raw": {
+      "adoption_date": null,
+      "publication_date": null,
+      "start_date": "1992-08-09T18:00:00.000Z",
+      "end_date": "1992-08-09T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.828Z",
+      "deleted_at": null
+    },
+    "dates_calendar": {
+      "adoption_date": null,
+      "publication_date": null,
+      "method": "UTC + 6 ч (местная полночь источника; сверка с реквизитами по каждому документу)"
+    },
+    "created_updated_note": "created_at/updated_at — метки записи в базе, не даты юридических изменений"
+  },
+  "status_raw": "new",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Жаңа",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1992-08-10",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "api_dates_raw": {
+      "adoption_date": null,
+      "publication_date": null,
+      "start_date": "1992-08-09T18:00:00.000Z",
+      "end_date": "1992-08-09T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.828Z",
+      "deleted_at": null
+    },
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "* Қол қойылған күнінен бастап күшіне енді - Қазақстан Республикасының халықаралық шарттары бюллетені, 2003 ж., N 10, 67-құжат."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T11:37:50Z",
+  "processed_at": "2026-10-17T11:37:50Z",
+  "paths": {
+    "markdown": "adilet_kk/O9200000001_Халықаралық_Федерацияның_Алматыдағы_аймақтық_өкiлдiгiнiң_статусы_туралы_Қазақста.md",
+    "quarantine": null,
+    "raw": "raw/kk/O9200000001.api.json.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "17c9befee9a8508129602ccf1cf52f3a9cff79ef6aa392a84aad14a9d17195a5",
+  "text_sha256": "5f5d1a263e822522d474ca7c6780d5b2678d469bc5c85a5675a1c30e72b8494c",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "4": 14
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 0
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 1140,
+    "output_tokens": 1140,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 14,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

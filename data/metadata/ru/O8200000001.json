@@ -1,0 +1,72 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O8200000001",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "Принципы медицинской этики, относящиеся к роли работников здравоохранения, в особенности врачей, в защите заключенных или задержанных лиц от пыток и других жестоких, бесчеловечных или унижающих достоинство видов обращения и наказания",
+  "card_title": "Принципы медицинской этики, относящиеся к роли работников здравоохранения, в особенности врачей, в защите заключенных или задержанных лиц от пыток и других жестоких, бесчеловечных или унижающих достоинство видов обращения и наказания",
+  "requisites_raw": "Приняты резолюцией 37/194 Генеральной Ассамблеи ООН от 18 декабря 1982 года",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/O8200000001",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Новый",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1982-12-18",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": []
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:36:33Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": "adilet_ru/O8200000001_Принципы_медицинской_этики,_относящиеся_к_роли_работников_здравоохранения,_в_осо.md",
+    "quarantine": null,
+    "raw": "raw/ru/O8200000001.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "c8e2f29a191fc508ad3b692770fa544327e5dcad1d09b718ef7dc5c4ab18a123",
+  "text_sha256": "764205237021a5b225fbd17cd28cc39130810a5a2e13446a00902a6b965c3707",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "2": 1
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 1
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 1006,
+    "output_tokens": 1006,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 0,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

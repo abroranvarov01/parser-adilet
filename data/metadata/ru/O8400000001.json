@@ -1,0 +1,74 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O8400000001",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "Процедуры эффективного выполнения минимальных стандартных правил, касающихся обращения с заключенными",
+  "card_title": "Процедуры эффективного выполнения минимальных стандартных правил, касающихся обращения с заключенными",
+  "requisites_raw": "Резолюция Экономического и Социального Совета ООН 1984/47 от 25 мая 1984 года",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/O8400000001",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Новый",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1984-05-25",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "23. Настоящее соглашение применимо к исполнению приговоров, вынесенных как до, так и после его вступления в силу. 24. Настоящее соглашение подлежит ратификации. Ратификационные грамоты сдаются на хранение в возможно кратчайший срок в ________. 25. Настоящее соглашение вступает в силу на тридцатый день после дня обмена ратификационными грамотами. 26. Любая Договаривающаяся Сторона может денонсировать настоящее соглашение, направив письменное уведомление об этом ___________. Денонсация вступает в силу спустя шесть месяцев после даты получения уведомления ____________. В удостоверение чего нижеподписавшиеся, будучи должным образом на то уполномочены своими соответствующими правительствами, подписали настоящий договор."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:37:25Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": "adilet_ru/O8400000001_Процедуры_эффективного_выполнения_минимальных_стандартных_правил,_касающихся_обр.md",
+    "quarantine": null,
+    "raw": "raw/ru/O8400000001.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "4e83909cbeca155eb3f95c4873c27dacfdf38f9b9163a15dd0ed9f5cd48eaf61",
+  "text_sha256": "f0a8af0fb8884bc99b79df7f39373a653c363e6ff9ef9371a1a3c8bd9aeabb5c",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "2": 3
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 6
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 3469,
+    "output_tokens": 3469,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 0,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

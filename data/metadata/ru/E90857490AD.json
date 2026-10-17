@@ -1,0 +1,110 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "E90857490AD",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "ЗАЩИТА ОТ КОРРОЗИИ В СТРОИТЕЛЬСТВЕ КОНСТРУКЦИИ БЕТОННЫЕ И ЖЕЛЕЗОБЕТОННЫЕ",
+  "card_title": "ЗАЩИТА ОТ КОРРОЗИИ В СТРОИТЕЛЬСТВЕ КОНСТРУКЦИИ БЕТОННЫЕ И ЖЕЛЕЗОБЕТОННЫЕ",
+  "requisites_raw": "Государственный стандарт Союза ССР (ГОСТ 28574-90 (СТ СЭВ 6319-88). Утвержден и введен в действие Постановлением Государственного строительного комитета СССР от 10 мая 1989 года №74.",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/E90857490AD",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Новый",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1989-05-10",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": []
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:38:28Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": "incomplete/ru/E90857490AD_ЗАЩИТА_ОТ_КОРРОЗИИ_В_СТРОИТЕЛЬСТВЕ_КОНСТРУКЦИИ_БЕТОННЫЕ_И_ЖЕЛЕЗОБЕТОННЫЕ.md",
+    "quarantine": null,
+    "raw": "raw/ru/E90857490AD.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "73a2ae8bc023f68d1a330f5e5db62c1d31e560a1b6126c4d74c8fc57139838dc",
+  "text_sha256": "d310480685ece89c8c0f46fc31f2d6b34a4f4af99ef0690d3e8eb523f467311c",
+  "parser_version": "1.1.0",
+  "attachments": [
+    {
+      "kind": "image",
+      "url": "https://old.adilet.zan.kz/files/1214/31/0.jpg",
+      "alt": null,
+      "width": "124",
+      "height": "81",
+      "link_text": null,
+      "decorative": false,
+      "decorative_reason": null,
+      "same_site": true,
+      "robots_allowed": false,
+      "download_status": "not_downloaded",
+      "local_path": null,
+      "sha256": null,
+      "content_type": null,
+      "content_extracted": false
+    },
+    {
+      "kind": "image",
+      "url": "https://old.adilet.zan.kz/files/1214/31/1.jpg",
+      "alt": null,
+      "width": "229",
+      "height": "62",
+      "link_text": null,
+      "decorative": false,
+      "decorative_reason": null,
+      "same_site": true,
+      "robots_allowed": false,
+      "download_status": "not_downloaded",
+      "local_path": null,
+      "sha256": null,
+      "content_type": null,
+      "content_extracted": false
+    }
+  ],
+  "structure": {
+    "headings_by_level": {
+      "3": 4,
+      "2": 1
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 0
+  },
+  "completeness": "attachments_not_extracted",
+  "state": "incomplete",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 1584,
+    "output_tokens": 1584,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 0,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [
+    "content_attachments_not_extracted:2"
+  ],
+  "warnings": []
+}

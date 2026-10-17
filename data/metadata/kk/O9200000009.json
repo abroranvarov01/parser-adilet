@@ -1,0 +1,121 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O9200000009",
+  "source_uuid": "3cafedc6-629e-4813-a9f9-2624f7ce6b10",
+  "language": "kk",
+  "site_language": "kaz",
+  "title": "Қазақстан Республикасының Yкiметi мен Беларусь Республикасының Yкiметi арасында көлiк саласында ынтымақтасу принциптерi және өзара қарым-қатынастар шарттары туралы Келісім",
+  "card_title": "Қазақстан Республикасының Yкiметi мен Беларусь Республикасының Yкiметi арасында көлiк саласында ынтымақтасу принциптерi және өзара қарым-қатынастар шарттары туралы Келісім",
+  "requisites_raw": "Келiсiм, Алматы қ., 1992 жылғы 16 қыркүйек",
+  "source_url": "https://old.adilet.zan.kz/kaz/docs/O9200000009",
+  "api_url": "https://adilet.zan.kz/api/documents/by-ngr/O9200000009?language=kaz",
+  "transport": "api",
+  "robots_note": "adilet.zan.kz/robots.txt запрещает /api/; API использован по решению оператора (--i-accept-api-robots-risk)",
+  "api": {
+    "id": "3cafedc6-629e-4813-a9f9-2624f7ce6b10",
+    "group_number": "O9200000009",
+    "language": "kaz",
+    "status": "new",
+    "is_actual": true,
+    "is_actual_note": "не доказательство юридической силы",
+    "is_stub": false,
+    "has_content": true,
+    "content_size": "2143",
+    "text_content_length": 4618,
+    "title_ru_field": "Қазақстан Республикасының Yкiметi мен Беларусь Республикасының Yкiметi арасында көлiк саласында ынтымақтасу принциптерi және өзара қарым-қатынастар шарттары туралы Келісім",
+    "title_kz_field": "Келiсiм, Алматы қ., 1992 жылғы 16 қыркүйек",
+    "official_name": "Келiсiм, Алматы қ., 1992 жылғы 16 қыркүйек",
+    "document_type": "Международный акт",
+    "registration_number": "200000000000",
+    "state_registry_number": "0",
+    "adoption_number": "",
+    "publication_reference": "Қазақстан Республикасының халықаралық шарттары Бюллетені 2003 ж., N 10, 69-құжат",
+    "dates_raw": {
+      "adoption_date": "1992-09-15T18:00:00.000Z",
+      "publication_date": null,
+      "start_date": "1992-09-15T18:00:00.000Z",
+      "end_date": "1992-09-15T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.832Z",
+      "deleted_at": null
+    },
+    "dates_calendar": {
+      "adoption_date": "1992-09-16",
+      "publication_date": null,
+      "method": "UTC + 6 ч (местная полночь источника; сверка с реквизитами по каждому документу)"
+    },
+    "created_updated_note": "created_at/updated_at — метки записи в базе, не даты юридических изменений"
+  },
+  "status_raw": "new",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Жаңа",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1992-09-16",
+    "adoption_date_source": "api",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "api_dates_raw": {
+      "adoption_date": "1992-09-15T18:00:00.000Z",
+      "publication_date": null,
+      "start_date": "1992-09-15T18:00:00.000Z",
+      "end_date": "1992-09-15T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.832Z",
+      "deleted_at": null
+    },
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "* Қол қойылған күнінен бастап күшіне енді - Қазақстан Республикасының халықаралық шарттары бюллетені, 2003 ж., N 10, 69-құжат."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T11:38:07Z",
+  "processed_at": "2026-10-17T11:38:07Z",
+  "paths": {
+    "markdown": "adilet_kk/O9200000009_Қазақстан_Республикасының_Yкiметi_мен_Беларусь_Республикасының_Yкiметi_арасында.md",
+    "quarantine": null,
+    "raw": "raw/kk/O9200000009.api.json.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "258c8d72aef580a4f71b399b8794a7987b8b4d67b16bfffdd8fbf0b5de6cce91",
+  "text_sha256": "aba525b74fa0994c9cd86c1a3a7361e48ea649cc0bbedfc1a5edc7c24f7f2988",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "4": 11
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 0
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 432,
+    "output_tokens": 432,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 11,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

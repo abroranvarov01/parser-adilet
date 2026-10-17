@@ -1,0 +1,72 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "H850000235_",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "Единый тарифно-квалификационный справочник работ и профессий рабочих",
+  "card_title": "Единый тарифно-квалификационный справочник работ и профессий рабочих",
+  "requisites_raw": "Единый тарифно-квалификационный справочник, от 31 января 1985 г.",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/H850000235_",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Новый",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1985-01-31",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": []
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:37:27Z",
+  "processed_at": "2026-10-17T11:20:15Z",
+  "paths": {
+    "markdown": "adilet_ru/H850000235__Единый_тарифно-квалификационный_справочник_работ_и_профессий_рабочих.md",
+    "quarantine": null,
+    "raw": "raw/ru/H850000235_.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "e8060e6b5fc0a55877134251026b3b78ff039b0e0018acdcd41deb4e6ae62ab9",
+  "text_sha256": "8b915b0df342b83d2a29a27021048fea962c7b94ad7d15c319308c689934fe42",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "2": 1
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 2
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 179054,
+    "output_tokens": 179054,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 0,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

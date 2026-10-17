@@ -1,0 +1,72 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O8600000002",
+  "source_uuid": null,
+  "language": "ru",
+  "site_language": "rus",
+  "title": "Декларация о праве на развитие",
+  "card_title": "Декларация о праве на развитие",
+  "requisites_raw": "Принята резолюцией 41/128 Генеральной Ассамблеи от 4 декабря 1986 года",
+  "source_url": "https://old.adilet.zan.kz/rus/docs/O8600000002",
+  "api_url": null,
+  "transport": "old_html",
+  "status_raw": "Новый",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Новый",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1986-12-04",
+    "adoption_date_source": "requisites_line",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "entry_into_force_date": null,
+    "entry_into_force_raw": []
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T10:37:57Z",
+  "processed_at": "2026-10-17T11:20:13Z",
+  "paths": {
+    "markdown": "adilet_ru/O8600000002_Декларация_о_праве_на_развитие.md",
+    "quarantine": null,
+    "raw": "raw/ru/O8600000002.html.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "7a651521c11367581ceadc9648e5854fde07b763e920be5632709dd56d5c2d1d",
+  "text_sha256": "6ff4746c3cce9b88969a17618c67878dca2d23a189b0aedf4e52dbdd854e25b6",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "4": 10
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 0
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 1369,
+    "output_tokens": 1369,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 10,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": []
+}

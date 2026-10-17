@@ -1,0 +1,124 @@
+{
+  "source_system": "adilet",
+  "jurisdiction": "KZ",
+  "document_id": "O9200000014",
+  "source_uuid": "edb7b59d-7119-4109-b76f-b9b2f0a6adc6",
+  "language": "kk",
+  "site_language": "kaz",
+  "title": "Қазақстан Республикасы мен Молдова Республикасы арасындағы өзара түсіністік пен ынтымақтастық туралы Шарт",
+  "card_title": "Қазақстан Республикасы мен Молдова Республикасы арасындағы өзара түсіністік пен ынтымақтастық туралы Шарт",
+  "requisites_raw": "Шарт, Алматы қаласы, 1992 жылғы 4 қараша",
+  "source_url": "https://old.adilet.zan.kz/kaz/docs/O9200000014",
+  "api_url": "https://adilet.zan.kz/api/documents/by-ngr/O9200000014?language=kaz",
+  "transport": "api",
+  "robots_note": "adilet.zan.kz/robots.txt запрещает /api/; API использован по решению оператора (--i-accept-api-robots-risk)",
+  "api": {
+    "id": "edb7b59d-7119-4109-b76f-b9b2f0a6adc6",
+    "group_number": "O9200000014",
+    "language": "kaz",
+    "status": "new",
+    "is_actual": true,
+    "is_actual_note": "не доказательство юридической силы",
+    "is_stub": false,
+    "has_content": true,
+    "content_size": "3850",
+    "text_content_length": 10015,
+    "title_ru_field": "Қазақстан Республикасы мен Молдова Республикасы арасындағы өзара түсіністік пен ынтымақтастық туралы Шарт",
+    "title_kz_field": "Шарт, Алматы қаласы, 1992 жылғы 4 қараша",
+    "official_name": "Шарт, Алматы қаласы, 1992 жылғы 4 қараша",
+    "document_type": "Международный акт",
+    "registration_number": "200000000000",
+    "state_registry_number": "0",
+    "adoption_number": "",
+    "publication_reference": "ҚР халықаралық шарттары бюллетені, 2003 ж., N 11, 82-құжат",
+    "dates_raw": {
+      "adoption_date": "1996-10-08T18:00:00.000Z",
+      "publication_date": null,
+      "start_date": "1992-11-03T18:00:00.000Z",
+      "end_date": "1992-11-03T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.809Z",
+      "deleted_at": null
+    },
+    "dates_calendar": {
+      "adoption_date": "1996-10-09",
+      "publication_date": null,
+      "method": "UTC + 6 ч (местная полночь источника; сверка с реквизитами по каждому документу)"
+    },
+    "created_updated_note": "created_at/updated_at — метки записи в базе, не даты юридических изменений"
+  },
+  "status_raw": "new",
+  "status_css_class": "status_new",
+  "normalized_status": "active",
+  "card_status_raw": "Жаңа",
+  "card_status_css_class": "status_new",
+  "card_normalized_status": "active",
+  "status_mismatch": false,
+  "status_mapping_note": "status_new/status_upd = выдача фильтра st=new|upd (ru «Действующий», kk «Қолданылып жүрген»); «Новый/Жаңа» — статус сайта, не дата принятия. Статус каждого языка свой.",
+  "catalog_filter": "st=new|upd",
+  "discovered_from": "catalog",
+  "dates": {
+    "adoption_date": "1996-10-09",
+    "adoption_date_source": "api",
+    "modification_date": null,
+    "adilet_publication_date": null,
+    "api_dates_raw": {
+      "adoption_date": "1996-10-08T18:00:00.000Z",
+      "publication_date": null,
+      "start_date": "1992-11-03T18:00:00.000Z",
+      "end_date": "1992-11-03T18:00:00.000Z",
+      "justice_reg_date": null,
+      "created_at": "2026-07-01T06:42:07.181Z",
+      "updated_at": "2026-08-27T11:34:00.809Z",
+      "deleted_at": null
+    },
+    "entry_into_force_date": null,
+    "entry_into_force_raw": [
+      "(Шарт 1996 жылғы 9 қазаннан бастап күшіне енді - Қазақстан Республикасының халықаралық шарттары бюллетені, 2003 ж., N 11, 82-құжат)",
+      "Осы Шарт Мәртебелі Келісуші Тараптардың заңдарына сәйкес бекітілуге тиіс және бекіту грамоталары алмасылған күні күшіне енеді."
+    ]
+  },
+  "info_tab": null,
+  "fetched_at": "2026-10-17T11:39:08Z",
+  "processed_at": "2026-10-17T11:39:08Z",
+  "paths": {
+    "markdown": "adilet_kk/O9200000014_Қазақстан_Республикасы_мен_Молдова_Республикасы_арасындағы_өзара_түсіністік_пен.md",
+    "quarantine": null,
+    "raw": "raw/kk/O9200000014.api.json.gz",
+    "raw_info": null
+  },
+  "raw_sha256": "bfbf666faf618de731bb31f4bfd1e2539c10be0a208285d1460ab2bee2717d32",
+  "text_sha256": "567a20116cfc34ce15369b64da72042a5fc9c9865646f339bd3f16fe47ff1a6b",
+  "parser_version": "1.1.0",
+  "attachments": [],
+  "structure": {
+    "headings_by_level": {
+      "4": 21
+    },
+    "tables": 0,
+    "html_tables": 0,
+    "links": 0
+  },
+  "completeness": "complete",
+  "state": "validated",
+  "validation": {
+    "ok": true,
+    "problems": [],
+    "source_tokens": 918,
+    "output_tokens": 918,
+    "missing_tokens": 0,
+    "missing_sample": [],
+    "extra_tokens": 0,
+    "extra_sample": [],
+    "numbers_missing": 0,
+    "article_labels_source": 21,
+    "article_labels_missing": [],
+    "exact_token_sequence": true,
+    "ui_leftovers": []
+  },
+  "review_reasons": [],
+  "warnings": [
+    "adoption_date_api_vs_requisites:1996-10-09!=1992-11-04"
+  ]
+}
